@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIF-C01 Task 1.3 – ML Development Lifecycle</title>
+  <style>
+    :root {
+      --aws-orange: #FF9900;
+      --aws-dark: #232F3E;
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #5a6a7a;
+      --border: #e1e4e8;
+      --accent: #0073bb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--aws-dark);
+      color: white;
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    header p { margin: 0.3rem 0 0; opacity: 0.85; font-size: 0.95rem; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: var(--card);
+      padding: 0.75rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all .15s;
+    }
+    nav button:hover, nav button.active {
+      background: var(--aws-orange);
+      color: white;
+      border-color: var(--aws-orange);
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .card h2, .card h3 { margin-top: 0; color: var(--aws-dark); }
+    .mnemonic {
+      background: #fff8e6;
+      border-left: 4px solid var(--aws-orange);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.25rem;
+      font-size: 1.05rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.92rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 0.8rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f1f3f5; font-weight: 600; }
+    .top5 ol { padding-left: 1.4rem; }
+    .top5 li { margin-bottom: 0.4rem; }
+    details {
+      margin: 0.6rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    details summary {
+      padding: 0.8rem 1rem;
+      background: #f8f9fa;
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: "▶ "; color: var(--aws-orange); }
+    details[open] summary::before { content: "▼ "; }
+    details .content { padding: 0.8rem 1rem 1rem; }
+    ul { padding-left: 1.3rem; }
+    li { margin-bottom: 0.35rem; }
+    .badge {
+      display: inline-block;
+      background: var(--aws-orange);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      margin-left: 0.4rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    @media (max-width: 700px) {
+      header { padding: 1rem; }
+      .container { padding: 1rem; }
+      nav { flex-direction: column; }
+      table { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AIF-C01 · Task Statement 1.3</h1>
+    <p>ML Development Lifecycle — 互動學習與記憶網站</p>
+  </header>
+
+  <div class="container">
+    <nav>
+      <button class="active" data-target="memory">📊 服務記憶表</button>
+      <button data-target="l1">Lesson 1</button>
+      <button data-target="l2">Lesson 2</button>
+      <button data-target="l3">Lesson 3</button>
+      <button data-target="l4">Lesson 4</button>
+      <button data-target="l5">Lesson 5</button>
+      <button data-target="l6">Lesson 6</button>
+      <button data-target="l7">Lesson 7</button>
+      <button data-target="takeaways">Key Takeaways</button>
+    </nav>
+
+    <!-- Memory Section -->
+    <section id="memory" class="section active">
+      <div class="mnemonic">
+        <strong>記憶口訣：</strong> SageMaker 是核心（Swiss Army Knife） → S3 儲存 + ECR 容器 → Glue 處理資料 → 其餘服務按階段記
+      </div>
+
+      <div class="card">
+        <h2>按 Lifecycle 階段分組</h2>
+        <table>
+          <thead>
+            <tr><th>階段</th><th>核心服務</th><th>其他常見服務</th><th>記憶提示</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>資料準備</strong></td>
+              <td>AWS Glue<br>Glue DataBrew<br>SageMaker Ground Truth<br>SageMaker Canvas<br>SageMaker Feature Store</td>
+              <td>Amazon MSK<br>Amazon Kinesis</td>
+              <td><strong>G</strong>lue 做 ETL<br><strong>G</strong>round Truth 標註<br><strong>C</strong>anvas 視覺化<br><strong>F</strong>eature Store 存 feature</td>
+            </tr>
+            <tr>
+              <td><strong>訓練 & 調參</strong></td>
+              <td><strong>Amazon SageMaker</strong><br>（Training Jobs, Experiments, AMT, JumpStart）</td>
+              <td>Amazon S3<br>Amazon ECR</td>
+              <td><strong>Sage</strong>Maker 做所有事<br><strong>S3</strong> 放資料與 artifact<br><strong>ECR</strong> 放 Docker image</td>
+            </tr>
+            <tr>
+              <td><strong>部署 & 推論</strong></td>
+              <td><strong>Amazon SageMaker</strong><br>（Batch / Real-time / Async / Serverless）</td>
+              <td>Amazon S3<br>Amazon ECR<br>API Gateway + Lambda</td>
+              <td>SageMaker 管理 endpoint<br>或自己用 Lambda</td>
+            </tr>
+            <tr>
+              <td><strong>監控 & MLOps</strong></td>
+              <td>SageMaker Model Monitor<br>SageMaker Pipelines<br>SageMaker Model Registry</td>
+              <td>Amazon CloudWatch<br>AWS Step Functions<br>Amazon MWAA</td>
+              <td>Monitor → CloudWatch 告警<br>Pipelines 做自動化</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card top5">
+        <h2>Top 5 必記</h2>
+        <ol>
+          <li><strong>Amazon SageMaker</strong> — 幾乎每個階段都有（核心中的核心）</li>
+          <li><strong>Amazon S3</strong> — 訓練資料 & 模型 artifact 儲存</li>
+          <li><strong>Amazon ECR</strong> — 容器 image（訓練與推論）</li>
+          <li><strong>AWS Glue</strong> — 資料 ETL 與 Data Catalog</li>
+          <li><strong>Amazon CloudWatch</strong> — 監控告警</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>快速記憶提示</h2>
+        <ul>
+          <li><strong>SageMaker</strong> = 一站式解決方案（訓練、調參、部署、監控、Pipeline 全包）</li>
+          <li><strong>S3 + ECR</strong> = 資料與容器的基礎組合</li>
+          <li><strong>Glue 家族</strong> = 資料準備主角</li>
+          <li><strong>Bedrock</strong> = 生成式 AI 的快速起點（foundation model）</li>
+          <li><strong>CloudWatch</strong> = 監控結果的告警中心</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Lessons (condensed for readability, expandable) -->
+    <section id="l1" class="section">
+      <div class="card">
+        <h2>Lesson 1: ML Pipelines and Business Goal</h2>
+        <details open>
+          <summary>ML Pipeline Overview</summary>
+          <div class="content">
+            <ul>
+              <li>一系列相互連接的步驟，從業務目標開始，結束於運作已部署的模型。</li>
+              <li>階段：定義問題 → 收集與準備資料 → 訓練模型 → 部署 → 監控。</li>
+              <li>反複性質；模型動態，需用新資料重新訓練。</li>
+              <li>較好的觀點：<strong>Lifecycle</strong>（部署後仍可能重複部分或全部流程）。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Starting with the Business Goal</summary>
+          <div class="content">
+            <ul>
+              <li>清楚定義問題與可量化業務價值。</li>
+              <li>定義具體 <strong>success criteria</strong>。</li>
+              <li>對齊利益相關者。</li>
+              <li>評估組織能力與生產路徑。</li>
+              <li>判斷 ML 是否最佳方案（比較準確度、成本、可伸縮性）。</li>
+              <li>確保有足夠高質量訓練資料。</li>
+              <li>從最簡單解決方案開始，必要時才增加複雜度。</li>
+              <li>做成本效益分析。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>AWS AI/ML Service Options</summary>
+          <div class="content">
+            <ol>
+              <li><strong>Fully hosted AI services</strong>（例：Amazon Comprehend）</li>
+              <li><strong>Start with existing models</strong>（Bedrock foundation models / SageMaker pre-trained）</li>
+              <li><strong>Train from scratch</strong>（最難、最貴、責任最高）</li>
+            </ol>
+            <p><strong>SageMaker JumpStart</strong>：預訓練 foundation 與 task-specific 模型，支援 transfer learning。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l2" class="section">
+      <div class="card">
+        <h2>Lesson 2: Collecting and Processing Training Data</h2>
+        <details open>
+          <summary>Data Collection & Preparation</summary>
+          <div class="content">
+            <ul>
+              <li>確認資料來源、儲存位置、streaming vs batch。</li>
+              <li>設置可重複的 <strong>ETL</strong> 流程。</li>
+              <li>標註資料常常是最耗時的步驟。</li>
+              <li>資料準備包含 pre-processing 與 feature engineering。</li>
+              <li>處理缺失值、異常值、PII。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Data Splitting & Features</summary>
+          <div class="content">
+            <ul>
+              <li>常見分割：~80% training / ~10% evaluation / ~10% test</li>
+              <li>只保留對推論有用的 features，減少記憶體與計算需求。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Key AWS Services</summary>
+          <div class="content">
+            <ul>
+              <li><strong>AWS Glue</strong>：完全托管 ETL + Data Catalog（只存 metadata）</li>
+              <li><strong>Glue DataBrew</strong>：視覺化無程式碼資料準備（250+ 轉換）</li>
+              <li><strong>SageMaker Ground Truth</strong>：高質量標註（active learning + 人工）</li>
+              <li><strong>SageMaker Canvas</strong>：視覺化準備與 feature engineering</li>
+              <li><strong>SageMaker Feature Store</strong>：集中管理與重用 features</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l3" class="section">
+      <div class="card">
+        <h2>Lesson 3: Training, Tuning, and Evaluating</h2>
+        <details open>
+          <summary>Training Process</summary>
+          <div class="content">
+            <ul>
+              <li>反複更新參數（weights），使推論接近期望輸出。</li>
+              <li>多個算法與設定應平行實驗。</li>
+              <li><strong>Hyperparameters</strong>：訓練前由資料科學家設定（例：layers、nodes）。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>SageMaker Training & Experiments</summary>
+          <div class="content">
+            <ul>
+              <li>建立 training job：指定 S3 資料、計算資源、輸出 S3、ECR container image、hyperparameters。</li>
+              <li><strong>SageMaker Experiments</strong>：比較不同訓練運行。</li>
+              <li><strong>Automatic Model Tuning (AMT)</strong>：自動尋找最佳 hyperparameter 組合。</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l4" class="section">
+      <div class="card">
+        <h2>Lesson 4: Deploying the Model</h2>
+        <details open>
+          <summary>Inference Options</summary>
+          <div class="content">
+            <ul>
+              <li><strong>Batch</strong>：大量、可等待（最省成本）</li>
+              <li><strong>Real-time</strong>：即時回應（REST API）</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>SageMaker Inference Options</summary>
+          <div class="content">
+            <ol>
+              <li><strong>Batch Transform</strong>：離線、大資料集</li>
+              <li><strong>Asynchronous</strong>：排隊、大 payload，空閒可縮到 0</li>
+              <li><strong>Serverless</strong>：Lambda，按使用量付費</li>
+              <li><strong>Real-time</strong>：持久 endpoint，持續流量</li>
+            </ol>
+            <p>低運維負擔：用 SageMaker 管理 endpoint（指向 S3 + ECR）。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l5" class="section">
+      <div class="card">
+        <h2>Lesson 5: Monitoring and MLOps</h2>
+        <details open>
+          <summary>Monitoring & Drift</summary>
+          <div class="content">
+            <ul>
+              <li>監控系統：捕捉資料 → 比較訓練集 → 規則偵測 → 告警。</li>
+              <li><strong>Data drift</strong>：資料分佈變化</li>
+              <li><strong>Concept drift</strong>：目標變數特性變化</li>
+              <li><strong>SageMaker Model Monitor</strong> + CloudWatch 告警可觸發再訓練。</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>MLOps & Pipelines</summary>
+          <div class="content">
+            <ul>
+              <li>套用軟體工程最佳實踐：自動化、版本控制、監控、自動再訓練。</li>
+              <li>好處：生產力、可重複性、可靠性、審計性、資料與模型品質。</li>
+              <li><strong>SageMaker Pipelines</strong>：可重現的 ML pipeline 編排。</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l6" class="section">
+      <div class="card">
+        <h2>Lesson 6: MLOps Services & Classification Metrics</h2>
+        <details open>
+          <summary>Other Services</summary>
+          <div class="content">
+            <ul>
+              <li>SageMaker Feature Store / Model Registry</li>
+              <li>AWS Step Functions（視覺化工作流）</li>
+              <li>Amazon MWAA（管理式 Apache Airflow）</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Confusion Matrix & Metrics</summary>
+          <div class="content">
+            <ul>
+              <li>TP / TN / FP / FN</li>
+              <li><strong>Accuracy</strong> = (TP+TN)/Total（不平衡資料集時不可靠）</li>
+              <li><strong>Precision</strong> = TP/(TP+FP) — 減少 false positives</li>
+              <li><strong>Recall</strong> = TP/(TP+FN) — 減少 false negatives</li>
+              <li><strong>F1 Score</strong>：Precision 與 Recall 的平衡</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="l7" class="section">
+      <div class="card">
+        <h2>Lesson 7: More Metrics & Business Metrics</h2>
+        <details open>
+          <summary>Additional Metrics</summary>
+          <div class="content">
+            <ul>
+              <li>False Positive Rate, True Negative Rate</li>
+              <li><strong>AUC / ROC</strong>：跨所有閾值的整體表現（0.5 = 隨機，1 = 完美）</li>
+              <li>回歸：MSE、RMSE（單位一致、易解釋）、MAE</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Business Metrics</summary>
+          <div class="content">
+            <ul>
+              <li>定義可量化成功標準（成本降低、銷售增長、客戶回饋等）。</li>
+              <li>上線後比較實際結果與目標。</li>
+              <li>計算 ROI，使用 cost allocation tags + Cost Explorer 追蹤費用。</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="takeaways" class="section">
+      <div class="card">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>始終從清楚的業務目標與 success criteria 開始。</li>
+          <li>優先選擇最簡單可行方案（hosted AI → transfer learning → train from scratch）。</li>
+          <li>資料品質、標註與 feature engineering 非常關鍵。</li>
+          <li>大量使用 SageMaker（訓練、實驗、調參、部署、監控、Pipeline）。</li>
+          <li>持續監控 drift + MLOps 自動化是生產環境的基礎。</li>
+          <li>根據業務影響選擇指標（precision vs recall 等）。</li>
+          <li>同時追蹤技術指標與業務指標（含成本與 ROI）。</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    AIF-C01 Task Statement 1.3 Study Notes · Interactive learning site<br>
+    Source: AWS ML Development Lifecycle lessons
+  </footer>
+
+  <script>
+    const buttons = document.querySelectorAll('nav button');
+    const sections = document.querySelectorAll('.section');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
